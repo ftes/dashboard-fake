@@ -1,0 +1,11 @@
+{
+  "name": "cloudraid-dashboard-data-faker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "\"Fredrik Teschke\" <f@ftes.de>",
+  "license": "MIT",
+  "dependencies": {
+    "js-yaml": "^3.7.0",
+    "json-schema-faker": "^0.4.0"
+  }
+}

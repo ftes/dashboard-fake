@@ -1,0 +1,723 @@
+swagger: '2.0'
+info:
+  title: CloudRAID <-> Dashboard Backend API
+  description: ""
+  version: "0.0.1"
+host: no.host
+schemes:
+  - https
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /customer:
+    post:
+      summary: Creates a new customer
+      consumes:
+        - application/json
+      parameters:
+        - name: CreateCustomerRequestDto
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CreateCustomerRequestDto'
+      responses:
+        200:
+          description: The created Customer object
+          schema:
+            $ref: '#/definitions/CustomerDto'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /customer/{id}:
+    put:
+      summary: Modifies an existing customer
+      consumes:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: id of customer
+          required: true
+          type: integer
+        - name: ModifyCustomerRequestDto
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ModifyCustomerRequestDto'
+      responses:
+        200:
+          description: The modified Customer object
+          schema:
+            $ref: '#/definitions/CustomerDto'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Deletes an existing customer
+      parameters:
+        - name: id
+          in: path
+          description: id of customer
+          required: true
+          type: integer
+      responses:
+        200:
+          description: The deleted Customer object
+          schema:
+            $ref: '#/definitions/CustomerDto'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /file:
+    post:
+      summary: Creates a new entry for an uploaded file
+      parameters:
+        - name: UploadFileRequestDto
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UploadFileRequestDto'
+      responses:
+        200:
+          description: The created entry for uploaded file
+          schema:
+            $ref: '#/definitions/FileDto'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /file/{id}:
+    post:
+      summary: Creates an entry for a file download event
+      parameters:
+        - name: id
+          in: path
+          description: id of file
+          required: true
+          type: integer
+        - name: FileDownloadEventDto
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/FileDownloadEventRequestDto'
+      responses:
+        200:
+          description: The created entry for the file download event
+          schema:
+            $ref: '#/definitions/FileDownloadEventDto'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: Creates a new entry for a file modification
+      parameters:
+        - name: id
+          in: path
+          description: id of file
+          required: true
+          type: integer
+        - name: ModifyFileRequestDto
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ModifyFileRequestDto'
+      responses:
+        200:
+          description: The modified entry for the file
+          schema:
+            $ref: '#/definitions/FileDto'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Creates a new entry for a file deletion
+      parameters:
+        - name: id
+          in: path
+          description: id of file
+          required: true
+          type: integer
+        - name: DeleteFileRequestDto
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DeleteFileRequestDto'
+      responses:
+        200:
+          description: The deleted entry for the file
+          schema:
+            $ref: '#/definitions/FileDto'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /sharing:
+    post:
+      summary: Creates a new sharing entry
+      parameters:
+        - name: CreateSharingRequestDto
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CreateSharingRequestDto'
+      responses:
+        200:
+          description: The created sharing entry
+          schema:
+            $ref: '#/definitions/SharingDto'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /sharing/{id}:
+    put:
+      summary: Modifies an existing sharing entry
+      parameters:
+        - name: id
+          in: path
+          description: id of sharing
+          required: true
+          type: integer
+        - name: ModifySharingRequestDto
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ModifySharingRequestDto'
+      responses:
+        200:
+          description: The modified sharing entry
+          schema:
+            $ref: '#/definitions/SharingDto'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Deletes an existing sharing entry
+      parameters:
+        - name: id
+          in: path
+          description: id of sharing
+          required: true
+          type: integer
+        - name: DeleteSharingRequestDto
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DeleteSharingRequestDto'
+      responses:
+        200:
+          description: The deleted sharing entry
+          schema:
+            $ref: '#/definitions/SharingDto'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /provider:
+    post:
+      summary: Creates a new provider entry
+      parameters:
+        - name: RegisterProviderRequestDto
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/RegisterProviderRequestDto'
+      responses:
+        200:
+          description: The created provider entry
+          schema:
+            $ref: '#/definitions/ProviderDto'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  CreateCustomerRequestDto:
+    type: object
+    required: ['id', 'name', 'licenseInformation', 'storageSize', 'users', 'devices', 'timestamp']
+    properties:
+      id:
+        type: integer
+        description: id of the customer
+        x-faker:
+          random.number:
+            min: 0
+      name:
+        type: string
+        description: name of the customer
+        x-faker: company.companyName
+      licenseInformation:
+        type: string
+        description: tbd
+        x-faker:
+            random.arrayElement: ['small', 'medium', 'large']
+      storageSize:
+        type: integer
+        description: size of storage according to the license
+        x-faker:
+          random.number:
+            min: 100
+            max: 10000000
+      users:
+        type: integer
+        description: number of allowed users according to the license
+        x-faker:
+          random.number:
+            min: 1
+            max: 1000
+      devices:
+        type: integer
+        description: number of devices per user according to the license
+        x-faker:
+          random.number:
+            min: 1
+            max: 1000
+      timestamp:
+        type: integer
+        description: timestamp in sec (unix format)
+        x-faker: date.past
+  ModifyCustomerRequestDto:
+    type: object
+    properties:
+      name:
+        type: string
+        description: name of the customer
+      licenseInformation:
+        type: string
+        description: tbd
+      storageSize:
+        type: integer
+        description: size of storage according to the license
+      users:
+        type: integer
+        description: number of allowed users according to the license
+      devices:
+        type: integer
+        description: number of devices per user according to the license
+      timestamp:
+        type: integer
+        description: timestamp in sec (unix format)
+  CustomerDto:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: id of the customer
+      name:
+        type: string
+        description: name of the customer
+      licenseInformation:
+        type: string
+        description: tbd
+      storageSize:
+        type: integer
+        description: size of storage according to the license
+      users:
+        type: integer
+        description: number of allowed users according to the license
+      devices:
+        type: integer
+        description: number of devices per user according to the license
+      timestamp:
+        type: integer
+        description: timestamp of the last modification (of the creation if never modified) in sec (unix format)
+  UploadFileRequestDto:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: id of uploaded file
+      userId:
+        type: integer
+        description: id of user who uploaded the file
+      customerId:
+        type: integer
+        description: id of customer
+      deviceId:
+        type: integer
+        description: id of device the file has been uploaded from
+      deviceType:
+        type: string
+        description: type of device
+      type:
+        type: boolean
+        description: type of created object (0 = file, 1 = folder)
+      filesize:
+        type: integer
+        description: size of file in KB (null if folder)
+      chunks:
+        type: array
+        items:
+          $ref: '#/definitions/Chunk'
+      folderId:
+        type: integer
+        description: id of folder where the file is stored in
+      erasureDuration:
+        type: integer
+        description: duration of de-erasure process in ms
+      encryptionDuration:
+        type: integer
+        description: duration of decryption process in ms
+      transmissionDuration:
+        type: integer
+        description: duration of transmission of the whole file in ms (does not have to be the sum of all chunk transmission durations)
+      latitude:
+        type: number
+        description: latitude of where the file has been uploaded (location of the activity)
+      longitude:
+        type: number
+        description: longitude of where the file has been uploaded (location of the activity)
+      timestamp:
+        type: integer
+        description: timestamp in sec (unix format)
+  ModifyFileRequestDto:
+    type: object
+    properties:
+      filesize:
+        type: integer
+        description: size of file
+      chunks:
+        type: array
+        items:
+          $ref: '#/definitions/Chunk'
+      folderId:
+        type: integer
+        description: id of folder where the file is stored in
+      erasureDuration:
+        type: integer
+        description: duration of de-erasure process in ms
+      encryptionDuration:
+        type: integer
+        description: duration of decryption process in ms
+      transmissionDuration:
+        type: integer
+        description: duration of transmission of the whole file in ms (does not have to be the sum of all chunk transmission durations)
+      userId:
+        type: integer
+        description: id of user
+      customerId:
+        type: integer
+        description: id of customer
+      deviceId:
+        type: integer
+        description: id of device the file has been modified and re-uploaded from
+      deviceType:
+        type: string
+        description: type of device
+      latitude:
+        type: number
+        description: latitude of where the file has been modified (location of the activity)
+      longitude:
+        type: number
+        description: longitude of where the file has been modified (location of the activity)
+      timestamp:
+        type: integer
+        description: timestamp in sec (unix format)
+  DeleteFileRequestDto:
+    type: object
+    properties:
+      userId:
+        type: integer
+        description: id of user
+      customerId:
+        type: integer
+        description: id of customer
+      deviceId:
+        type: integer
+        description: id of device the file has been modified and re-uploaded from
+      deviceType:
+        type: string
+        description: type of device
+      latitude:
+        type: number
+        description: latitude of where the file has been modified (location of the activity)
+      longitude:
+        type: number
+        description: longitude of where the file has been modified (location of the activity)
+      timestamp:
+        type: integer
+        description: timestamp in sec (unix format)
+  Chunk:
+    type: object
+    properties:
+      providerId:
+        type: integer
+        description: id of provider where chunk is stored
+      size:
+        type: integer
+        description: size of chunk
+      type:
+        type: boolean
+        description: type of chunk (0 = K, 1 = M)
+      transmissionDuration:
+        type: integer
+        description: duration for transmitting chunk to storage provider
+  FileDto:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: id of uploaded file
+      userId:
+        type: integer
+        description: id of user who uploaded the file
+      type:
+        type: boolean
+        description: type of created object (0 = file, 1 = folder)
+      filesize:
+        type: integer
+        description: size of file in KB (null if folder)
+      chunks:
+        type: array
+        items:
+          $ref: '#/definitions/Chunk'
+      folderId:
+        type: integer
+        description: id of folder where the file is stored in
+      latitude:
+        type: number
+        description: latitude of where the file has been uploaded (location of the activity)
+      longitude:
+        type: number
+        description: longitude of where the file has been uploaded (location of the activity)
+      timestamp:
+        type: integer
+        description: timestamp of the last modification (of the creation if never modified) in sec (unix format)
+  CreateSharingRequestDto:
+    type: object
+    properties:
+      sharingId:
+        type: integer
+        description: id of sharing
+      userId:
+        type: integer
+        description: id of user who created the sharing
+      customerId:
+        type: integer
+        description: id of customer
+      deviceId:
+        type: integer
+        description: id of device
+      deviceType:
+        type: string
+        description: type of device
+      fileId:
+        type: integer
+        description: id of file which has been shared
+      shareeId:
+        type: integer
+        description: id of user who has received the sharing
+      type:
+        type: boolean
+        description: 0 = internal sharing, 1 = external sharing (link)
+      password:
+        type: boolean
+        description: 0 = not secured by password, 1 = password set
+      expiryDate:
+        type: boolean
+        description: 0 = no expiry date set, 1 = expiry date set
+      timestamp:
+        type: integer
+        description: timestamp in sec (unix format)
+  ModifySharingRequestDto:
+    type: object
+    properties:
+      userId:
+        type: integer
+        description: id of user
+      customerId:
+        type: integer
+        description: id of customer
+      deviceId:
+        type: integer
+        description: id of device
+      deviceType:
+        type: string
+        description: type of device
+      password:
+        type: boolean
+        description: 0 = not secured by password, 1 = password set
+      expiryDate:
+        type: boolean
+        description: 0 = no expiry date set, 1 = expiry date set
+      timestamp:
+        type: integer
+        description: timestamp in sec (unix format)
+  DeleteSharingRequestDto:
+    type: object
+    properties:
+      userId:
+        type: integer
+        description: id of user
+      customerId:
+        type: integer
+        description: id of customer
+      deviceId:
+        type: integer
+        description: id of device
+      deviceType:
+        type: string
+        description: type of device
+      timestamp:
+        type: integer
+        description: timestamp in sec (unix format)
+  SharingDto:
+    type: object
+    properties:
+      sharingId:
+        type: integer
+        description: id of sharing
+      userId:
+        type: integer
+        description: id of user who created the sharing
+      fileId:
+        type: integer
+        description: id of file which has been shared
+      shareeId:
+        type: integer
+        description: id of user who has received the sharing
+      type:
+        type: boolean
+        description: 0 = internal sharing, 1 = external sharing (link)
+      password:
+        type: boolean
+        description: 0 = not secured by password, 1 = password set
+      expiryDate:
+        type: boolean
+        description: 0 = no expiry date set, 1 = expiry date set
+      timestamp:
+        type: integer
+        description: timestamp of the last modification (of the creation if never modified) in sec (unix format)
+  FileDownloadEventDto:
+    type: object
+    properties:
+      fileId:
+        type: integer
+        description: id of file
+      deerasureDuration:
+        type: integer
+        description: duration of de-erasure process in ms
+      decryptionDuration:
+        type: integer
+        description: duration of decryption process in ms
+      transmissionDuration:
+        type: integer
+        description: duration of transmission of the whole file in ms (does not have to be the sum of all chunk transmission durations)
+      chunks:
+        type: array
+        items:
+          $ref: '#/definitions/Chunk'
+      userId:
+        type: integer
+        description: id of user (null if via link)
+      customerId:
+        type: integer
+        description: id of customer (null if via link)
+      deviceId:
+        type: integer
+        description: id of device the file has been downloaded to (if downloaded via browser/link, deviceId is null)
+      deviceType:
+        type: string
+        description: type of device
+      latitude:
+        type: number
+        description: latitude of where the file has been downloaded (location of the activity)
+      longitude:
+        type: number
+        description: longitude of where the file has been downloaded (location of the activity)
+      timestamp:
+        type: integer
+        description: timestamp in sec (unix format)
+  FileDownloadEventRequestDto:
+    type: object
+    properties:
+      fileId:
+        type: integer
+        description: id of file
+      deerasureDuration:
+        type: integer
+        description: duration of de-erasure process in ms
+      decryptionDuration:
+        type: integer
+        description: duration of decryption process in ms
+      transmissionDuration:
+        type: integer
+        description: duration of transmission of the whole file in ms (does not have to be the sum of all chunk transmission durations)
+      chunks:
+        type: array
+        items:
+          $ref: '#/definitions/Chunk'
+      userId:
+        type: integer
+        description: id of user (null if via link)
+      customerId:
+        type: integer
+        description: id of customer (null if via link)
+      deviceId:
+        type: integer
+        description: id of device the file has been downloaded to (if downloaded via browser/link, deviceId is null)
+      deviceType:
+        type: string
+        description: type of device
+      latitude:
+        type: number
+        description: latitude of where the file has been downloaded (location of the activity)
+      longitude:
+        type: number
+        description: longitude of where the file has been downloaded (location of the activity)
+      timestamp:
+        type: integer
+        description: timestamp in sec (unix format)
+  RegisterProviderRequestDto:
+    type: object
+    properties:
+      name:
+        type: string
+        description: name of the provider
+      size:
+        type: integer
+        description: size of the storage which can be used according to the license
+      latitude:
+        type: number
+        description: latitude of where the data center of the provider is located
+      longitude:
+        type: number
+        description: longitude of where the data center of the provider is located
+      timestamp:
+        type: integer
+        description: timestamp of when the device has been registered in sec (unix format)
+  ProviderDto:
+    type: object
+    properties:
+      name:
+        type: string
+        description: name of the provider
+      size:
+        type: integer
+        description: size of the storage which can be used according to the license
+      latitude:
+        type: number
+        description: latitude of where the data center of the provider is located
+      longitude:
+        type: number
+        description: longitude of where the data center of the provider is located
+      timestamp:
+        type: integer
+        description: timestamp of when the provider has been registered in sec (unix format)
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string
