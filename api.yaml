@@ -1,14 +1,14 @@
 definitions:
     customer:
         type: object
-        required: [id, name, licenseInformation, storageSize, users, devices, timestamp]
+        required: [id, name, licenseInformation, storageSize, users, devices, location, timestamp]
         properties:
             id:
                 type: integer
                 description: id of the customer
                 x-faker:
                     custom.id:
-                        type: CustomerDto
+                        type: customer
             name:
                 type: string
                 description: name of the customer
@@ -29,6 +29,8 @@ definitions:
                 type: integer
                 description: number of devices per user according to the license
                 minimum: 0
+            location:
+                $ref: '#/definitions/location'
             timestamp:
                 type: string
                 format: date-time
@@ -36,19 +38,19 @@ definitions:
                 x-faker: custom.past
     chunk:
         type: object
-        required: [fileId, providerId, size, type, transmissionDuration, timestamp]
+        required: [fileId, providerId, size, type, transmissionDuration, location, timestamp]
         properties:
             fileId:
                 x-faker:
                     custom.id:
-                        type: FileDto
+                        type: file
                         reference: true
             providerId:
                 type: integer
                 description: id of provider where chunk is stored
                 x-faker:
                     custom.id:
-                        type: ProviderDto
+                        type: provider
                         reference: true
             size:
                 type: integer
@@ -61,6 +63,12 @@ definitions:
                 type: integer
                 description: duration for transmitting chunk to storage provider
                 minimum: 0
+            location:
+                type: object
+                x-faker:
+                    custom.location:
+                        type: provider
+                        reference: true
             timestamp:
                 type: string
                 format: date-time
@@ -75,13 +83,13 @@ definitions:
                 description: id of uploaded file
                 x-faker:
                     custom.id:
-                        type: FileDto
+                        type: file
             customerId:
                 type: integer
                 description: id of customer
                 x-faker:
                     custom.id:
-                        type: CustomerDto
+                        type: customer
                         reference: true
             userId:
                 type: integer
@@ -107,14 +115,14 @@ definitions:
                 x-faker: custom.past
     sharing:
         type: object
-        required: [sharingId, userId, fileId, shareeId, type, password, expiryDate, timestamp]
+        required: [sharingId, userId, fileId, shareeId, type, password, expiryDate, location, timestamp]
         properties:
             sharingId:
                 type: integer
                 description: id of sharing
                 x-faker:
                     custom.id:
-                        type: SharingDto
+                        type: sharing
             userId:
                 type: integer
                 description: id of user who created the sharing
@@ -126,15 +134,12 @@ definitions:
                 description: id of file which has been shared
                 x-faker:
                     custom.id:
-                        type: FileDto
+                        type: file
                         reference: true
             shareeId:
                 type: integer
                 description: id of user who has received the sharing
-                x-faker:
-                    custom.id:
-                        type: UserDto
-                        reference: true
+                minimum: 0
             type:
                 type: boolean
                 description: 0 = internal sharing, 1 = external sharing (link)
@@ -144,6 +149,8 @@ definitions:
             expiryDate:
                 type: boolean
                 description: 0 = no expiry date set, 1 = expiry date set
+            location:
+                $ref: '#/definitions/location'
             timestamp:
                 type: string
                 format: date-time
@@ -158,7 +165,7 @@ definitions:
                 description: id of the provider
                 x-faker:
                     custom.id:
-                        type: ProviderDto
+                        type: provider
             name:
                 type: string
                 description: name of the provider
@@ -168,7 +175,10 @@ definitions:
                 description: size of the storage which can be used according to the license
                 minimum: 0
             location:
-                $ref: '#/definitions/location'
+                type: object
+                x-faker:
+                    custom.location:
+                        type: provider
             timestamp:
                 type: string
                 format: date-time
@@ -176,20 +186,20 @@ definitions:
                 x-faker: custom.past
     operation:
         type: object
-        required: [providerId, fileId, type, duration, error, timestamp]
+        required: [providerId, fileId, type, duration, error, location, timestamp]
         properties:
             providerId:
                 type: integer
                 description: Only set for upload and download
                 x-faker:
                     custom.id:
-                        type: ProviderDto
+                        type: provider
                         reference: true
             fileId:
                 type: integer
                 x-faker:
                     custom.id:
-                        type: FileDto
+                        type: file
                         reference: true
             type:
                 type: string
@@ -199,6 +209,8 @@ definitions:
                 minimum: 0
             error:
                 type: boolean
+            location:
+                $ref: '#/definitions/location'
             timestamp:
                 type: string
                 format: date-time
@@ -206,21 +218,12 @@ definitions:
                 x-faker: custom.past
     location:
         type: object
+        x-faker: custom.location
         required: [lat, lon]
         properties:
             lat:
                 type: number
                 description: Latitude
-                x-faker:
-                    random.number:
-                        min: 48.1351253
-                        max: 53.5510846
-                        precision: 0.000001
             lon:
                 type: number
                 description: Longitude
-                x-faker:
-                    random.number:
-                        min: 8.466039499999965
-                        max: 13.404953999999975
-                        precision: 0.000001
