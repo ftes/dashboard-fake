@@ -1,7 +1,6 @@
 let fs = require('fs');
 let jsf = require('json-schema-faker');
 let yaml = require('js-yaml');
-let deref = require('json-schema-deref-sync');
 let path = require('path');
 
 const outDir = 'data';
@@ -20,8 +19,9 @@ jsf.extend('faker', function(faker) {
         return faker.random.number({min: 0, max: ids[type]});
     }
     faker.custom = {
-        unixTimestamp: function(years, refDate) {
-            return Math.floor(faker.date.past(years, refDate).getTime() / 1000);
+        past: function(years, refDate) {
+            // otherwise converted to string in different format
+            return faker.date.past(years, refDate).toJSON();
         },
         id: function(options) {
             let type = options.type;
@@ -33,14 +33,14 @@ jsf.extend('faker', function(faker) {
 });
 
 let api = yaml.safeLoad(fs.readFileSync('./api.yaml'));
-api = deref(api);
 
 let dtosToGenerate = {
-    CustomerDto: 10,
-    ProviderDto: 5,
-    FileDto: 1000,
-    Chunk: 10000,
-    SharingDto: 1000,
+    customer: 10,
+    provider: 5,
+    file: 1000,
+    chunk: 10000,
+    sharing: 1000,
+    operation: 100000,
 };
 
 function buildId(i) {
@@ -52,11 +52,11 @@ function buildId(i) {
 }
 
 for (let dto in dtosToGenerate) {
+    console.time(dto);
     let n = dtosToGenerate[dto];
     let schema = {
 	    type: 'array',
-	    uniqueItems: true,
-        items: api.definitions[dto],
+        items: api[dto],
         minItems: n,
         maxItems: n,
     };
@@ -68,6 +68,7 @@ for (let dto in dtosToGenerate) {
         fs.writeSync(file, JSON.stringify(buildId(i++)) + '\n');
         fs.writeSync(file, JSON.stringify(item) + '\n');
     }
+    console.timeEnd(dto);
 }
 
 
