@@ -2,6 +2,7 @@ let fs = require('fs');
 let jsf = require('json-schema-faker');
 let yaml = require('js-yaml');
 let path = require('path');
+let deref = require('json-schema-deref-sync');
 
 const outDir = 'data';
 
@@ -33,6 +34,7 @@ jsf.extend('faker', function(faker) {
 });
 
 let api = yaml.safeLoad(fs.readFileSync('./api.yaml'));
+api = deref(api);
 
 let dtosToGenerate = {
     customer: 10,
@@ -56,7 +58,7 @@ for (let dto in dtosToGenerate) {
     let n = dtosToGenerate[dto];
     let schema = {
 	    type: 'array',
-        items: api[dto],
+        items: api.definitions[dto],
         minItems: n,
         maxItems: n,
     };

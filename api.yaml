@@ -1,233 +1,226 @@
-customer:
-    type: object
-    required: [id, name, licenseInformation, storageSize, users, devices, timestamp]
-    properties:
-        id:
-            type: integer
-            description: id of the customer
-            x-faker:
-                custom.id:
-                    type: CustomerDto
-        name:
-            type: string
-            description: name of the customer
-            x-faker: company.companyName
-    licenseInformation:
-        type: string
-        description: tbd
-        enum: [small, medium, large]
-    storageSize:
-        type: integer
-        description: size of storage according to the license
-        minimum: 0
-    users:
-        type: integer
-        description: number of allowed users according to the license
-        minimum: 0
-    devices:
-        type: integer
-        description: number of devices per user according to the license
-        minimum: 0
-    timestamp:
-        type: string
-        format: date-time
-        description: timestamp of the last modification (of the creation if never modified)
-        x-faker: custom.past
-chunk:
-    type: object
-    required: [fileId, providerId, size, type, transmissionDuration, timestamp]
-    properties:
-        fileId:
-            x-faker:
-                custom.id:
-                    type: FileDto
-                    reference: true
-        providerId:
-            type: integer
-            description: id of provider where chunk is stored
-            x-faker:
-                custom.id:
-                    type: ProviderDto
-                    reference: true
-        size:
-            type: integer
-            description: size of chunk
-            minimum: 0
-        type:
-            type: boolean
-            description: type of chunk (0 = K, 1 = M)
-        transmissionDuration:
-            type: integer
-            description: duration for transmitting chunk to storage provider
-            minimum: 0
-        timestamp:
-            type: string
-            format: date-time
-            description: timestamp of the upload
-            x-faker: custom.past
-file:
-    type: object
-    required: [id, customerId, userId, type, filesize, folderId, latitude, longitude, timestamp]
-    properties:
-        id:
-            type: integer
-            description: id of uploaded file
-            x-faker:
-                custom.id:
-                    type: FileDto
-        customerId:
-            type: integer
-            description: id of customer
-            x-faker:
-                custom.id:
-                    type: CustomerDto
-                    reference: true
-        userId:
-            type: integer
-            description: id of user who uploaded the file
-            minimum: 0
-        type:
-            type: boolean
-            description: type of created object (0 = file, 1 = folder)
-        filesize:
-            type: integer
-            description: size of file in KB (null if folder)
-            minimum: 0
-        folderId:
-            type: integer
-            description: id of folder where the file is stored in
-            minimum: 0
-        latitude:
-            type: number
-            description: latitude of where the file has been uploaded (location of the activity)
-            x-faker:
-                random.number:
-                    min: 48.1351253
-                    max: 53.5510846
-                    precision: 0.000001
-        longitude:
-            type: number
-            description: longitude of where the file has been uploaded (location of the activity)
-            x-faker:
-                random.number:
-                    min: 8.466039499999965
-                    max: 13.404953999999975
-                    precision: 0.000001
-        timestamp:
-            type: string
-            format: date-time
-            description: timestamp of the last modification (of the creation if never modified)
-            x-faker: custom.past
-sharing:
-    type: object
-    required: [sharingId, userId, fileId, shareeId, type, password, expiryDate, timestamp]
-    properties:
-        sharingId:
-            type: integer
-            description: id of sharing
-            x-faker:
-                custom.id:
-                    type: SharingDto
-        userId:
-            type: integer
-            description: id of user who created the sharing
-            x-faker:
-                random.number:
-                    min: 0
-        fileId:
-            type: integer
-            description: id of file which has been shared
-            x-faker:
-                custom.id:
-                    type: FileDto
-                    reference: true
-        shareeId:
-            type: integer
-            description: id of user who has received the sharing
-            x-faker:
-                custom.id:
-                    type: UserDto
-                    reference: true
-        type:
-            type: boolean
-            description: 0 = internal sharing, 1 = external sharing (link)
-        password:
-            type: boolean
-            description: 0 = not secured by password, 1 = password set
-        expiryDate:
-            type: boolean
-            description: 0 = no expiry date set, 1 = expiry date set
-        timestamp:
-            type: string
-            format: date-time
-            description: timestamp of the last modification (of the creation if never modified)
-            x-faker: custom.past
-provider:
-    type: object
-    required: [id, name, size, latitude, longitude, timestamp]
-    properties:
-        id:
-            type: integer
-            description: id of the provider
-            x-faker:
-                custom.id:
-                    type: ProviderDto
-        name:
-            type: string
-            description: name of the provider
-            x-faker: company.companyName
-        size:
-            type: integer
-            description: size of the storage which can be used according to the license
-            minimum: 0
-        latitude:
-            type: number
-            description: latitude of where the data center of the provider is located
-            x-faker:
-                random.number:
-                    min: 48.1351253
-                    max: 53.5510846
-                    precision: 0.000001
-        longitude:
-            type: number
-            description: longitude of where the data center of the provider is located
-            x-faker:
-                random.number:
-                    min: 8.466039499999965
-                    max: 13.404953999999975
-                    precision: 0.000001
-        timestamp:
-            type: string
-            format: date-time
-            description: timestamp of when the provider has been registered
-            x-faker: custom.past
-operation:
-    type: object
-    required: [providerId, fileId, type, duration, error, timestamp]
-    properties:
-        providerId:
-            type: integer
-            description: Only set for upload and download
-            x-faker:
-                custom.id:
-                    type: ProviderDto
-                    reference: true
-        fileId:
-            type: integer
-            x-faker:
-                custom.id:
-                    type: FileDto
-                    reference: true
-        type:
-            type: string
-            enum: [encrypt, erase, upload, download, deerase, decrypt]
-        duration:
-            type: integer
-            minimum: 0
-        error:
-            type: boolean
-        timestamp:
-            type: string
-            format: date-time
-            description: timestamp of when the provider has been registered
-            x-faker: custom.past
+definitions:
+    customer:
+        type: object
+        required: [id, name, licenseInformation, storageSize, users, devices, timestamp]
+        properties:
+            id:
+                type: integer
+                description: id of the customer
+                x-faker:
+                    custom.id:
+                        type: CustomerDto
+            name:
+                type: string
+                description: name of the customer
+                x-faker: company.companyName
+            licenseInformation:
+                type: string
+                description: tbd
+                enum: [small, medium, large]
+            storageSize:
+                type: integer
+                description: size of storage according to the license
+                minimum: 0
+            users:
+                type: integer
+                description: number of allowed users according to the license
+                minimum: 0
+            devices:
+                type: integer
+                description: number of devices per user according to the license
+                minimum: 0
+            timestamp:
+                type: string
+                format: date-time
+                description: timestamp of the last modification (of the creation if never modified)
+                x-faker: custom.past
+    chunk:
+        type: object
+        required: [fileId, providerId, size, type, transmissionDuration, timestamp]
+        properties:
+            fileId:
+                x-faker:
+                    custom.id:
+                        type: FileDto
+                        reference: true
+            providerId:
+                type: integer
+                description: id of provider where chunk is stored
+                x-faker:
+                    custom.id:
+                        type: ProviderDto
+                        reference: true
+            size:
+                type: integer
+                description: size of chunk
+                minimum: 0
+            type:
+                type: boolean
+                description: type of chunk (0 = K, 1 = M)
+            transmissionDuration:
+                type: integer
+                description: duration for transmitting chunk to storage provider
+                minimum: 0
+            timestamp:
+                type: string
+                format: date-time
+                description: timestamp of the upload
+                x-faker: custom.past
+    file:
+        type: object
+        required: [id, customerId, userId, type, filesize, folderId, location, timestamp]
+        properties:
+            id:
+                type: integer
+                description: id of uploaded file
+                x-faker:
+                    custom.id:
+                        type: FileDto
+            customerId:
+                type: integer
+                description: id of customer
+                x-faker:
+                    custom.id:
+                        type: CustomerDto
+                        reference: true
+            userId:
+                type: integer
+                description: id of user who uploaded the file
+                minimum: 0
+            type:
+                type: boolean
+                description: type of created object (0 = file, 1 = folder)
+            filesize:
+                type: integer
+                description: size of file in KB (null if folder)
+                minimum: 0
+            folderId:
+                type: integer
+                description: id of folder where the file is stored in
+                minimum: 0
+            location:
+                $ref: '#/definitions/location'
+            timestamp:
+                type: string
+                format: date-time
+                description: timestamp of the last modification (of the creation if never modified)
+                x-faker: custom.past
+    sharing:
+        type: object
+        required: [sharingId, userId, fileId, shareeId, type, password, expiryDate, timestamp]
+        properties:
+            sharingId:
+                type: integer
+                description: id of sharing
+                x-faker:
+                    custom.id:
+                        type: SharingDto
+            userId:
+                type: integer
+                description: id of user who created the sharing
+                x-faker:
+                    random.number:
+                        min: 0
+            fileId:
+                type: integer
+                description: id of file which has been shared
+                x-faker:
+                    custom.id:
+                        type: FileDto
+                        reference: true
+            shareeId:
+                type: integer
+                description: id of user who has received the sharing
+                x-faker:
+                    custom.id:
+                        type: UserDto
+                        reference: true
+            type:
+                type: boolean
+                description: 0 = internal sharing, 1 = external sharing (link)
+            password:
+                type: boolean
+                description: 0 = not secured by password, 1 = password set
+            expiryDate:
+                type: boolean
+                description: 0 = no expiry date set, 1 = expiry date set
+            timestamp:
+                type: string
+                format: date-time
+                description: timestamp of the last modification (of the creation if never modified)
+                x-faker: custom.past
+    provider:
+        type: object
+        required: [id, name, size, location, timestamp]
+        properties:
+            id:
+                type: integer
+                description: id of the provider
+                x-faker:
+                    custom.id:
+                        type: ProviderDto
+            name:
+                type: string
+                description: name of the provider
+                x-faker: company.companyName
+            size:
+                type: integer
+                description: size of the storage which can be used according to the license
+                minimum: 0
+            location:
+                $ref: '#/definitions/location'
+            timestamp:
+                type: string
+                format: date-time
+                description: timestamp of when the provider has been registered
+                x-faker: custom.past
+    operation:
+        type: object
+        required: [providerId, fileId, type, duration, error, timestamp]
+        properties:
+            providerId:
+                type: integer
+                description: Only set for upload and download
+                x-faker:
+                    custom.id:
+                        type: ProviderDto
+                        reference: true
+            fileId:
+                type: integer
+                x-faker:
+                    custom.id:
+                        type: FileDto
+                        reference: true
+            type:
+                type: string
+                enum: [encrypt, erase, upload, download, deerase, decrypt]
+            duration:
+                type: integer
+                minimum: 0
+            error:
+                type: boolean
+            timestamp:
+                type: string
+                format: date-time
+                description: timestamp of when the provider has been registered
+                x-faker: custom.past
+    location:
+        type: object
+        required: [lat, lon]
+        properties:
+            lat:
+                type: number
+                description: Latitude
+                x-faker:
+                    random.number:
+                        min: 48.1351253
+                        max: 53.5510846
+                        precision: 0.000001
+            lon:
+                type: number
+                description: Longitude
+                x-faker:
+                    random.number:
+                        min: 8.466039499999965
+                        max: 13.404953999999975
+                        precision: 0.000001
