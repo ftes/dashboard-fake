@@ -52,6 +52,14 @@ jsf.extend('faker', function(faker) {
   return faker;
 });
 
+let postProcessing = {
+    chunk: [
+        chunk => {
+            chunk.direction = ['erase', 'encrypt', 'upload'].indexOf(chunk.operationType) != -1 ? 'save' : 'open';
+        }
+    ]
+}
+
 let api = yaml.safeLoad(fs.readFileSync('./api.yaml'));
 api = deref(api);
 
@@ -82,6 +90,8 @@ for (let dto in dtosToGenerate) {
         maxItems: n,
     };
     let fake = jsf(schema);
+
+    if (postProcessing[dto]) postProcessing[dto].forEach(func => fake.forEach(item => func(item)));
 
     let i = 0;
     let file = fs.openSync(path.join(outDir, dto), 'w');

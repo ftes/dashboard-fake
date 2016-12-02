@@ -38,7 +38,7 @@ definitions:
                 x-faker: custom.past
     chunk:
         type: object
-        required: [fileId, providerId, size, type, transmissionDuration, location, timestamp]
+        required: [fileId, providerId, size, isKChunk, transmissionDuration, location, timestamp]
         properties:
             fileId:
                 x-faker:
@@ -56,7 +56,7 @@ definitions:
                 type: integer
                 description: size of chunk
                 minimum: 0
-            type:
+            isKChunk:
                 type: boolean
                 description: type of chunk (0 = K, 1 = M)
             transmissionDuration:
@@ -76,7 +76,7 @@ definitions:
                 x-faker: custom.past
     file:
         type: object
-        required: [id, customerId, userId, type, filesize, folderId, location, timestamp]
+        required: [id, customerId, userId, isFolder, filesize, folderId, location, timestamp]
         properties:
             id:
                 type: integer
@@ -95,7 +95,7 @@ definitions:
                 type: integer
                 description: id of user who uploaded the file
                 minimum: 0
-            type:
+            isFolder:
                 type: boolean
                 description: type of created object (0 = file, 1 = folder)
             filesize:
@@ -186,7 +186,7 @@ definitions:
                 x-faker: custom.past
     operation:
         type: object
-        required: [providerId, fileId, type, duration, error, location, timestamp]
+        required: [providerId, fileId, operationType, direction, filesize, direction, duration, error, location, timestamp]
         properties:
             providerId:
                 type: integer
@@ -201,9 +201,16 @@ definitions:
                     custom.id:
                         type: file
                         reference: true
-            type:
+            filesize:
+                type: integer
+                minimum: 0
+            operationType:
                 type: string
                 enum: [encrypt, erase, upload, download, deerase, decrypt]
+            direction:
+                description: Derived from operationType
+                type: string
+                enum: [save, open]
             duration:
                 type: integer
                 minimum: 0
