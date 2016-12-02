@@ -241,48 +241,28 @@ paths:
 definitions:
   CreateCustomerRequestDto:
     type: object
-    required: ['id', 'name', 'licenseInformation', 'storageSize', 'users', 'devices', 'timestamp']
     properties:
       id:
         type: integer
         description: id of the customer
-        x-faker:
-          random.number:
-            min: 0
       name:
         type: string
         description: name of the customer
-        x-faker: company.companyName
       licenseInformation:
         type: string
         description: tbd
-        x-faker:
-            random.arrayElement: ['small', 'medium', 'large']
       storageSize:
         type: integer
         description: size of storage according to the license
-        x-faker:
-          random.number:
-            min: 100
-            max: 10000000
       users:
         type: integer
         description: number of allowed users according to the license
-        x-faker:
-          random.number:
-            min: 1
-            max: 1000
       devices:
         type: integer
         description: number of devices per user according to the license
-        x-faker:
-          random.number:
-            min: 1
-            max: 1000
       timestamp:
         type: integer
         description: timestamp in sec (unix format)
-        x-faker: date.past
   ModifyCustomerRequestDto:
     type: object
     properties:
@@ -306,28 +286,48 @@ definitions:
         description: timestamp in sec (unix format)
   CustomerDto:
     type: object
+    required: [id, name, licenseInformation, storageSize, users, devices, timestamp]
     properties:
       id:
         type: integer
         description: id of the customer
+        x-faker:
+            custom.id:
+                type: CustomerDto
       name:
         type: string
         description: name of the customer
+        x-faker: company.companyName
       licenseInformation:
         type: string
         description: tbd
+        x-faker:
+            random.arrayElement: [small, medium, large]
       storageSize:
         type: integer
         description: size of storage according to the license
+        x-faker:
+          random.number:
+            min: 100
+            max: 10000000
       users:
         type: integer
         description: number of allowed users according to the license
+        x-faker:
+          random.number:
+            min: 1
+            max: 1000
       devices:
         type: integer
         description: number of devices per user according to the license
+        x-faker:
+          random.number:
+            min: 1
+            max: 1000
       timestamp:
         type: integer
         description: timestamp of the last modification (of the creation if never modified) in sec (unix format)
+        x-faker: custom.unixTimestamp
   UploadFileRequestDto:
     type: object
     properties:
@@ -446,34 +446,68 @@ definitions:
         description: timestamp in sec (unix format)
   Chunk:
     type: object
+    required: [providerId, size, type, transmissionDuration]
     properties:
+      fileId:
+        x-faker:
+          custom.id:
+            type: FileDto
+            reference: true
       providerId:
         type: integer
         description: id of provider where chunk is stored
+        x-faker:
+          custom.id:
+            type: ProviderDto
+            reference: true
       size:
         type: integer
         description: size of chunk
+        x-faker:
+          random.number:
+            min: 1
       type:
         type: boolean
         description: type of chunk (0 = K, 1 = M)
       transmissionDuration:
         type: integer
         description: duration for transmitting chunk to storage provider
+        x-faker:
+          random.number:
+            min: 1
   FileDto:
     type: object
+    required: [id, customerId, userId, type, filesize, folderId, latitude, longitude, timestamp]
+    #additionalProperties: false
     properties:
       id:
         type: integer
         description: id of uploaded file
+        x-faker:
+          custom.id:
+            type: FileDto
+      customerId:
+        type: integer
+        description: id of customer
+        x-faker:
+          custom.id:
+            type: CustomerDto
+            reference: true
       userId:
         type: integer
         description: id of user who uploaded the file
+        x-faker:
+          random.number:
+            min: 0
       type:
         type: boolean
         description: type of created object (0 = file, 1 = folder)
       filesize:
         type: integer
         description: size of file in KB (null if folder)
+        x-faker:
+          random.number:
+            min: 1
       chunks:
         type: array
         items:
@@ -481,15 +515,29 @@ definitions:
       folderId:
         type: integer
         description: id of folder where the file is stored in
+        x-faker:
+          random.number:
+            min: 0
       latitude:
         type: number
         description: latitude of where the file has been uploaded (location of the activity)
+        x-faker:
+          random.number:
+            min: 48.1351253
+            max: 53.5510846
+            precision: 0.000001
       longitude:
         type: number
         description: longitude of where the file has been uploaded (location of the activity)
+        x-faker:
+          random.number:
+            min: 8.466039499999965
+            max: 13.404953999999975
+            precision: 0.000001
       timestamp:
         type: integer
         description: timestamp of the last modification (of the creation if never modified) in sec (unix format)
+        x-faker: custom.unixTimestamp
   CreateSharingRequestDto:
     type: object
     properties:
@@ -570,19 +618,34 @@ definitions:
         description: timestamp in sec (unix format)
   SharingDto:
     type: object
+    required: [sharingId, userId, fileId, shareeId, type, password, expiryDate, timestamp]
     properties:
       sharingId:
         type: integer
         description: id of sharing
+        x-faker:
+          custom.id:
+            type: SharingDto
       userId:
         type: integer
         description: id of user who created the sharing
+        x-faker:
+          random.number:
+            min: 0
       fileId:
         type: integer
         description: id of file which has been shared
+        x-faker:
+          custom.id:
+            type: FileDto
+            reference: true
       shareeId:
         type: integer
         description: id of user who has received the sharing
+        x-faker:
+          custom.id:
+            type: UserDto
+            reference: true
       type:
         type: boolean
         description: 0 = internal sharing, 1 = external sharing (link)
@@ -595,6 +658,7 @@ definitions:
       timestamp:
         type: integer
         description: timestamp of the last modification (of the creation if never modified) in sec (unix format)
+        x-faker: custom.unixTimestamp
   FileDownloadEventDto:
     type: object
     properties:
@@ -695,22 +759,44 @@ definitions:
         description: timestamp of when the device has been registered in sec (unix format)
   ProviderDto:
     type: object
+    required: [id, name, size, latitude, longitude, timestamp]
     properties:
+      id:
+        type: integer
+        description: id of the provider
+        x-faker:
+          custom.id:
+            type: ProviderDto
       name:
         type: string
         description: name of the provider
+        x-faker: company.companyName
       size:
         type: integer
         description: size of the storage which can be used according to the license
+        x-faker:
+            random.number:
+                min: 1
       latitude:
         type: number
         description: latitude of where the data center of the provider is located
+        x-faker:
+          random.number:
+            min: 48.1351253
+            max: 53.5510846
+            precision: 0.000001
       longitude:
         type: number
         description: longitude of where the data center of the provider is located
+        x-faker:
+          random.number:
+            min: 8.466039499999965
+            max: 13.404953999999975
+            precision: 0.000001
       timestamp:
         type: integer
         description: timestamp of when the provider has been registered in sec (unix format)
+        x-faker: custom.unixTimestamp
   Error:
     type: object
     properties:
