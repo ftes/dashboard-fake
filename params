@@ -1,0 +1,3 @@
+HOST='localhost:9200'
+INDEX='dashboard'
+BASE="$HOST/$INDEX"

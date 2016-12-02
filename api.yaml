@@ -76,7 +76,7 @@ definitions:
                 x-faker: custom.past
     file:
         type: object
-        required: [id, customerId, userId, isFolder, filesize, folderId, location, timestamp]
+        required: [id, customerId, userId, isFolder, fileType, filesize, folderId, location, timestamp]
         properties:
             id:
                 type: integer
@@ -91,6 +91,9 @@ definitions:
                     custom.id:
                         type: customer
                         reference: true
+            fileType:
+                type: string
+                enum: [video, picture, text, unknown]
             userId:
                 type: integer
                 description: id of user who uploaded the file
@@ -186,7 +189,7 @@ definitions:
                 x-faker: custom.past
     operation:
         type: object
-        required: [providerId, fileId, operationType, direction, filesize, direction, duration, error, location, timestamp]
+        required: [providerId, fileId, operationType, deviceType, direction, error, location, timestamp, filesize, duration]
         properties:
             providerId:
                 type: integer
@@ -210,12 +213,17 @@ definitions:
             direction:
                 description: Derived from operationType
                 type: string
-                enum: [save, open]
+                enum: [open, save]
             duration:
                 type: integer
                 minimum: 0
+            deviceType:
+                type: string
+                enum: [smartphone, tablet, laptop, desktop]
             error:
-                type: boolean
+                description: 0 is no error, 1 is error
+                type: integer
+                enum: [0, 1]
             location:
                 $ref: '#/definitions/location'
             timestamp:

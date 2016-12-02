@@ -1,0 +1,8 @@
+{
+    "customer": 10,
+    "provider": 5,
+    "file": 1000,
+    "chunk": 10000,
+    "sharing": 1000,
+    "operation": 100000
+}
