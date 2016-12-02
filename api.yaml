@@ -446,7 +446,7 @@ definitions:
         description: timestamp in sec (unix format)
   Chunk:
     type: object
-    required: [providerId, size, type, transmissionDuration]
+    required: [fileId, providerId, size, type, transmissionDuration, timestamp]
     properties:
       fileId:
         x-faker:
@@ -475,6 +475,10 @@ definitions:
         x-faker:
           random.number:
             min: 1
+      timestamp:
+        type: integer
+        description: timestamp of the upload in sec (unix format)
+        x-faker: custom.unixTimestamp
   FileDto:
     type: object
     required: [id, customerId, userId, type, filesize, folderId, latitude, longitude, timestamp]
@@ -508,10 +512,10 @@ definitions:
         x-faker:
           random.number:
             min: 1
-      chunks:
-        type: array
-        items:
-          $ref: '#/definitions/Chunk'
+      #chunks:
+      #  type: array
+      #  items:
+      #    $ref: '#/definitions/Chunk'
       folderId:
         type: integer
         description: id of folder where the file is stored in
